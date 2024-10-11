@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  bool isOnline = true;
   @override
   void initState() {
     super.initState();
@@ -22,6 +25,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log(isOnline.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
@@ -52,16 +56,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       itemBuilder: (context, index) {
                         final product = productParams.products![index];
                         return ListTile(
-                          leading: Image.network(
-                            product.images[0],
-                            fit: BoxFit.fill,
-                            width: 70.w,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(
-                              Icons.error,
-                              size: 70,
-                            ),
-                          ),
+                          leading: product.imageBytes.isNotEmpty
+                              ? Image.memory(
+                                  product.imageBytes[0], // Display cached image
+                                  fit: BoxFit.fill,
+                                  width: 70.w,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(
+                                    Icons.error,
+                                    size: 70,
+                                  ),
+                                )
+                              : Image.network(
+                                  product.images[0],
+                                  fit: BoxFit.fill,
+                                  width: 70.w,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(
+                                    Icons.error,
+                                    size: 70,
+                                  ),
+                                ),
                           title: Text(product.title),
                           subtitle: Text('\$${product.price.toString()}'),
                           onTap: () {

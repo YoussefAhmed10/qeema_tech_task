@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qeema_tech_task/data/models/product_model.dart';
@@ -57,18 +55,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.product.images.length,
                 itemBuilder: (context, index) {
-                  final imageUrl = widget.product.images[index];
-                  log(imageUrl);
                   return Padding(
                     padding: EdgeInsets.only(right: 8.w),
-                    child: Image.network(
-                      widget.product.images[index]
-                          .replaceAll(RegExp(r'[\/[\/]\/"]'), ''),
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.error,
-                        // size: 70,
-                      ),
-                    ),
+                    child: widget.product.imageBytes.isNotEmpty
+                        ? Image.memory(
+                            widget.product
+                                .imageBytes[index], // Display cached image
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                              Icons.error,
+                              size: 70,
+                            ),
+                          )
+                        : Image.network(
+                            widget.product.images[index]
+                                .replaceAll(RegExp(r'[\/[\/]\/"]'), ''),
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                              Icons.error,
+                              size: 70,
+                            ),
+                          ),
                   );
                 },
               ),
