@@ -15,9 +15,9 @@ class ProductProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts({bool? isStart}) async {
     _isLoading = true;
-    notifyListeners();
+    isStart == false ? null : notifyListeners();
 
     try {
       _products = await _productRepository.fetchProducts();
