@@ -21,6 +21,7 @@ class ProductProvider with ChangeNotifier {
 
     try {
       _products = await _productRepository.fetchProducts();
+
       _errorMessage = null;
     } catch (e) {
       _errorMessage = e.toString();

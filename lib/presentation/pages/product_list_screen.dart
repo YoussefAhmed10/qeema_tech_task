@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:qeema_tech_task/domain/providers/product_provider.dart';
 import 'package:qeema_tech_task/presentation/pages/home_screen/widget/shimmer_product_card.dart';
+import 'package:qeema_tech_task/presentation/pages/product_detail_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -63,7 +64,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           ),
                           title: Text(product.title),
                           subtitle: Text('\$${product.price.toString()}'),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailScreen(product: product),
+                              ),
+                            );
+                          },
                         );
                       },
                     );
