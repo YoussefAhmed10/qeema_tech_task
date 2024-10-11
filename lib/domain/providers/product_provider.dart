@@ -15,19 +15,22 @@ class ProductProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> fetchProducts({bool? isStart}) async {
+  Future<List<Product>> fetchProducts({bool? isStart}) async {
     _isLoading = true;
     isStart == false ? null : notifyListeners();
-
+    _errorMessage = null;
     try {
-      _products = await _productRepository.fetchProducts();
-
-      _errorMessage = null;
-    } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
+      var getProducts = await _productRepository.fetchProducts();
+      _products = getProducts;
+      notifyListeners();
       _isLoading = false;
       notifyListeners();
+      return _products!;
+    } catch (error) {
+      _errorMessage = error.toString();
+      _isLoading = false;
+      notifyListeners();
+      return [];
     }
   }
 }

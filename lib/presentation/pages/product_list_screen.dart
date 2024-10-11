@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -15,23 +13,23 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  bool isOnline = true;
   @override
   void initState() {
     super.initState();
-    // Fetch the products when the screen loads
     context.read<ProductProvider>().fetchProducts(isStart: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    log(isOnline.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
       ),
-      body: context.watch<ProductProvider>().isLoading
-          ? SizedBox(
+      body: Consumer<ProductProvider>(
+        builder: (context, productParams, _) {
+          if (productParams.isLoading == true) {
+            // Display shimmer loading effect while data is being fetched
+            return SizedBox(
               height: 500.h,
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
@@ -41,58 +39,47 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 itemCount: 5,
                 separatorBuilder: (context, index) => SizedBox(height: 10.h),
               ),
-            )
-          : context.watch<ProductProvider>().errorMessage != null
-              ? Center(
-                  child: Text(
-                    context.watch<ProductProvider>().errorMessage!,
-                  ),
-                )
-              : Consumer<ProductProvider>(
-                  builder: (context, productParams, _) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: productParams.products?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final product = productParams.products![index];
-                        return ListTile(
-                          leading: product.imageBytes.isNotEmpty
-                              ? Image.memory(
-                                  product.imageBytes[0], // Display cached image
-                                  fit: BoxFit.fill,
-                                  width: 70.w,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                    Icons.error,
-                                    size: 70,
-                                  ),
-                                )
-                              : Image.network(
-                                  product.images[0],
-                                  fit: BoxFit.fill,
-                                  width: 70.w,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                    Icons.error,
-                                    size: 70,
-                                  ),
-                                ),
-                          title: Text(product.title),
-                          subtitle: Text('\$${product.price.toString()}'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductDetailScreen(product: product),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+            );
+          }
+
+          // Display the product list if data is fetched successfully
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: productParams.products?.length ?? 0,
+            itemBuilder: (context, index) {
+              final product = productParams.products![index];
+              return ListTile(
+                leading: product.imageBytes.isNotEmpty
+                    ? Image.memory(
+                        product.imageBytes[0], // Display cached image
+                        fit: BoxFit.fill,
+                        width: 70.w,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.error, size: 70),
+                      )
+                    : Image.network(
+                        product.images[0],
+                        fit: BoxFit.fill,
+                        width: 70.w,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.error, size: 70),
+                      ),
+                title: Text(product.title),
+                subtitle: Text('\$${product.price.toString()}'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductDetailScreen(product: product),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
