@@ -15,8 +15,8 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
-    super.initState();
     context.read<ProductProvider>().fetchProducts(isStart: false);
+    super.initState();
   }
 
   @override
@@ -45,9 +45,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
           // Display the product list if data is fetched successfully
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: productParams.products?.length ?? 0,
+            itemCount: productParams.products.length,
             itemBuilder: (context, index) {
-              final product = productParams.products![index];
+              final product = productParams.products[index];
               return ListTile(
                 leading: product.imageBytes.isNotEmpty
                     ? Image.memory(

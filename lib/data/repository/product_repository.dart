@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,12 +16,13 @@ class ProductRepository {
       return productBox.values.toList();
     } else {
       final response = await http.get(Uri.parse(apiUrl));
-      log(response.body);
+      // log(response.body);
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = jsonDecode(response.body);
+        final List<dynamic> limitedJsonData = jsonData.take(10).toList();
         List<Product> products = [];
 
-        for (var json in jsonData) {
+        for (var json in limitedJsonData) {
           Product product = Product.fromJson(json);
 
           // Download the images as bytes

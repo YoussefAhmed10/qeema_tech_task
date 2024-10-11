@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qeema_tech_task/data/models/product_model.dart';
 import 'package:qeema_tech_task/domain/providers/product_provider.dart';
 import 'package:qeema_tech_task/presentation/pages/home_screen/home_screen.dart';
-import 'package:qeema_tech_task/presentation/pages/product_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,18 +29,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    super.initState();
-    // Delay the fetch operation to ensure the widget is fully initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductProvider>().fetchProducts(isStart: false);
-      setState(() {});
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    setState(() {});
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Qeema Tech Task',
